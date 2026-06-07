@@ -1,13 +1,20 @@
 import 'package:flutter/material.dart';
 
+
+import '../../features/students/presentation/screens/student_list_screen.dart';
+
+
+
 class AdminLayout extends StatefulWidget {
   final Widget child;
   final int selectedIndex;
+  final String pageTitle;
 
   const AdminLayout({
     super.key,
     required this.child,
     required this.selectedIndex,
+    required this.pageTitle,
   });
 
   @override
@@ -17,6 +24,36 @@ class AdminLayout extends StatefulWidget {
 
 class _AdminLayoutState
     extends State<AdminLayout> {
+
+  void navigateTo(String menuTitle) {
+
+    switch (menuTitle) {
+
+      case 'Students':
+
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (_) =>
+                const StudentListScreen(),
+          ),
+        );
+
+        break;
+
+      case 'Dashboard':
+
+        // later
+
+        break;
+
+      case 'Teachers':
+
+        // later
+
+        break;
+    }
+  }
 
   final Color sidebarColor =
       const Color(0xFF111827);
@@ -231,9 +268,7 @@ class _AdminLayoutState
                             ),
 
                             onTap: () {
-
-                              // later navigation
-
+                              navigateTo(menu['title']);
                             },
                           ),
                         ),
@@ -348,12 +383,11 @@ class _AdminLayoutState
 
                       children: [
 
-                        const Text(
-                          'Dashboard',
-                          style: TextStyle(
+                        Text(
+                          widget.pageTitle,
+                          style: const TextStyle(
                             fontSize: 22,
-                            fontWeight:
-                                FontWeight.bold,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
 

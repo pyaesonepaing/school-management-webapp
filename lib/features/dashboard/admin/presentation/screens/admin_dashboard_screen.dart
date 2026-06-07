@@ -65,7 +65,8 @@ class _AdminDashboardScreenState
   @override
   Widget build(BuildContext context) {
     return AdminLayout(
-      selectedIndex: 0,
+    selectedIndex: 0,
+    pageTitle: 'Dashboard',
     child: isLoading
       ? const Center(
           child: CircularProgressIndicator(),
