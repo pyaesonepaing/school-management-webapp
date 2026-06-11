@@ -65,6 +65,65 @@ class StudentService {
     }
   }
 
+  Future<Map<String, dynamic>>
+    getStudentDetail({
+    required String token,
+    required int studentId,
+  }) async {
+
+    final response = await dio.get(
+      'http://127.0.0.1:8000/api/admin/students/$studentId',
+      options: Options(
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Accept': 'application/json',
+        },
+      ),
+    );
+
+    return response.data;
+  }
+
+
+  Future<void> updateStudent({
+
+    required String token,
+    required int studentId,
+
+    required String name,
+    required String email,
+
+    String? phone,
+    String? gender,
+    String? address,
+
+    required bool status,
+
+  }) async {
+
+    await dio.put(
+
+      'http://127.0.0.1:8000/api/admin/students/$studentId',
+
+      data: {
+
+        'name': name,
+        'email': email,
+        'phone': phone,
+        'gender': gender,
+        'address': address,
+        'status': status,
+
+      },
+
+      options: Options(
+        headers: {
+          'Authorization':
+              'Bearer $token',
+        },
+      ),
+    );
+  }
 
 
 }

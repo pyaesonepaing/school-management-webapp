@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:school_management_app/features/students/presentation/screens/student_detail_screen.dart';
 
 import '../../data/student_service.dart';
 import '../../models/student_model.dart';
@@ -22,6 +23,8 @@ class _StudentListScreenState
 
   List<StudentModel> students = [];
   List<StudentModel> filtered = [];
+
+  Set<int> selectedStudents = {};
 
   final searchController =
       TextEditingController();
@@ -142,27 +145,56 @@ class _StudentListScreenState
                   height: 20,
                 ),
 
-                TextField(
-                  controller:
-                      searchController,
+                Wrap(
+                  spacing: 10,
+                  runSpacing: 10,
 
-                  onChanged: search,
+                  children: [
 
-                  decoration:
-                      const InputDecoration(
-                    hintText:
-                        'Search Student...',
-                    prefixIcon:
-                        Icon(Icons.search),
-                    border:
-                        OutlineInputBorder(),
-                  ),
+                    SizedBox(
+                      width: 350,
+                      child: TextField(
+                        controller: searchController,
+                        onChanged: search,
+                        decoration: const InputDecoration(
+                          hintText: 'Search students...',
+                          prefixIcon: Icon(Icons.search),
+                        ),
+                      ),
+                    ),
+
+                    SizedBox(
+                      width: 150,
+                      height: 40,
+                      child: ElevatedButton(
+                        onPressed: selectedStudents.isEmpty
+                            ? null
+                            : () {},
+                        child: const Text(
+                          'Bulk Enroll',
+                        ),
+                      ),
+                    ),
+
+                    SizedBox(
+                      width: 150,
+                      height: 40,
+                      child: ElevatedButton(
+                        onPressed: selectedStudents.isEmpty
+                            ? null
+                            : () {},
+                        child: const Text(
+                          'Bulk Delete',
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
 
                 const SizedBox(
                   height: 20,
                 ),
-
+                
                 Expanded(
 
                   child: filtered.isEmpty
@@ -212,78 +244,176 @@ class _StudentListScreenState
                           ),
                         )
 
-                      : SingleChildScrollView(
+                      : ListView.builder(
 
-                          scrollDirection:
-                              Axis.horizontal,
+                          itemCount: filtered.length,
 
-                          child: DataTable(
+                          itemBuilder: (context, index) {
 
-                            columns: const [
+                            final student =
+                                filtered[index];
 
-                              DataColumn(
-                                label:
-                                    Text('ID'),
+                            return Container(
+
+                              margin:
+                                  const EdgeInsets.only(
+                                bottom: 12,
                               ),
 
-                              DataColumn(
-                                label: Text(
-                                  'Student No',
+                              decoration: BoxDecoration(
+
+                                color: Colors.white,
+
+                                borderRadius:
+                                    BorderRadius.circular(12),
+
+                                border: Border.all(
+                                  color:
+                                      Colors.grey.shade300,
                                 ),
                               ),
 
-                              DataColumn(
-                                label:
-                                    Text('Name'),
-                              ),
+                              child: Padding(
+                                  padding: const EdgeInsets.all(16),
 
-                              DataColumn(
-                                label:
-                                    Text('Email'),
-                              ),
-                            ],
+                                  child: Row(
 
-                            rows:
-                                filtered.map(
-                              (student) {
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
 
-                                return DataRow(
+                                    children: [
+                                      Checkbox(
 
-                                  cells: [
+                                        value: selectedStudents.contains(
+                                          student.id,
+                                        ),
 
-                                    DataCell(
-                                      Text(
-                                        student.id
-                                            .toString(),
+                                        onChanged: (value) {
+
+                                          setState(() {
+
+                                            if (value == true) {
+
+                                              selectedStudents.add(
+                                                student.id,
+                                              );
+
+                                            } else {
+
+                                              selectedStudents.remove(
+                                                student.id,
+                                              );
+
+                                            }
+
+                                          });
+
+                                        },
                                       ),
-                                    ),
+                                      CircleAvatar(
+                                        radius: 25,
+                                        backgroundColor:
+                                            const Color(0xFF1E1E8C),
 
-                                    DataCell(
-                                      Text(
-                                        student
-                                            .studentNo,
+                                        child: Text(
+                                          student.name
+                                              .substring(0, 1)
+                                              .toUpperCase(),
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontWeight:
+                                                FontWeight.bold,
+                                          ),
+                                        ),
                                       ),
-                                    ),
 
-                                    DataCell(
-                                      Text(
-                                        student
-                                            .name,
-                                      ),
-                                    ),
+                                      const SizedBox(width: 16),
 
-                                    DataCell(
-                                      Text(
-                                        student
-                                            .email,
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+
+                                          children: [
+
+                                            Text(
+                                              student.name,
+                                              style:
+                                                  const TextStyle(
+                                                fontSize: 16,
+                                                fontWeight:
+                                                    FontWeight.bold,
+                                              ),
+                                            ),
+
+                                            const SizedBox(height: 4),
+
+                                            Text(student.email),
+
+                                            const SizedBox(height: 8),
+
+                                            Text(
+                                              student.studentNo,
+                                              style: const TextStyle(
+                                                color:
+                                                    Color(0xFF1E1E8C),
+                                                fontWeight:
+                                                    FontWeight.bold,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                  ],
-                                );
-                              },
-                            ).toList(),
-                          ),
-                        ),
+
+                                      Row(
+                                        mainAxisSize:
+                                            MainAxisSize.min,
+
+                                        children: [
+
+                                          IconButton(
+                                            icon: const Icon(
+                                              Icons.visibility,
+                                              color: Colors.blue,
+                                            ),
+
+                                            onPressed: () {
+
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (_) =>
+                                                      StudentDetailScreen(
+                                                    studentId:
+                                                        student.id,
+                                                  ),
+                                                ),
+                                              );
+
+                                            },
+                                          ),
+
+                                          IconButton(
+                                            onPressed: () {},
+                                            icon: const Icon(
+                                              Icons.edit,
+                                            ),
+                                          ),
+
+                                          IconButton(
+                                            onPressed: () {},
+                                            icon: const Icon(
+                                              Icons.school,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                            );
+                          },
+                        )
                 ),
               ],
             ),
